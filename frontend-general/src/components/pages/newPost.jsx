@@ -4,8 +4,6 @@ import { useState, useEffect } from "react";
 
 export const NewPost = () => {
   const [content, setContent] = useState();
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjdkZjFmYzU0LTJiNjgtNDY4ZC1hMjdjLTY3NDJmZDk3NDVhZCIsImFkbWluIjpmYWxzZSwidXNlcm5hbWUiOiJ1c2VyIiwicGFzc3dvcmQiOiIkMmEkMTAkZ29qeTVaZFJaZWt5b1U5NHh4N3BJZVpFNHA2NzBORkhmc0pwYmRNa0MxNWNva21ER3M2VVMiLCJpYXQiOjE3MzU2NzEwMzl9.25pSRSzKAKh-8-HBVKnIJp-nnPbYbVWkGpTNf7xUC5g";
 
   useEffect(() => {
     const fetchData = async () => {
@@ -14,7 +12,7 @@ export const NewPost = () => {
 
         body: JSON.stringify({ content: content }),
         headers: {
-          authorization: `Bearer ${token}`,
+          authorization: `Bearer ${localStorage.getItem("authToken")}`,
           "Content-Type": "application/json",
         },
       });

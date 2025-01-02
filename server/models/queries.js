@@ -63,8 +63,10 @@ exports.getPost = async (id) => {
       include: {
         comments: {
           include: {
-          comments: true
-        }},
+            author: true,
+            comments: true,
+          },
+        },
         author: true,
       },
     });
@@ -77,6 +79,24 @@ exports.getPost = async (id) => {
 exports.getPosts = async () => {
   try {
     const posts = await prisma.post.findMany({
+      include: {
+        comments: true,
+        author: true,
+      },
+    });
+
+    return posts;
+  } catch (error) {
+    return error;
+  }
+};
+
+exports.getUserPosts = async (id) => {
+  try {
+    const posts = await prisma.post.findMany({
+      where: {
+        authorId: id,
+      },
       include: {
         comments: true,
         author: true,

@@ -77,6 +77,19 @@ exports.getPost = async (req, res) => {
   }
 };
 
+exports.getUserPosts = async (req, res) => {
+  const { userId } = req.params;
+  console.log(userId);
+  
+  try {
+    const posts = await db.getUserPosts(userId);
+
+    return res.send(posts);
+  } catch (error) {
+    return error;
+  }
+};
+
 exports.putPost = async (req, res) => {
   const { id } = req.params;
   const { content, publish } = req.body;

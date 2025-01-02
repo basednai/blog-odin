@@ -2,14 +2,12 @@ import { useEffect, useState } from "react";
 import { Post } from "../post";
 import { Nav } from "../nav";
 
-function Home() {
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjdkZjFmYzU0LTJiNjgtNDY4ZC1hMjdjLTY3NDJmZDk3NDVhZCIsImFkbWluIjpmYWxzZSwidXNlcm5hbWUiOiJ1c2VyIiwicGFzc3dvcmQiOiIkMmEkMTAkZ29qeTVaZFJaZWt5b1U5NHh4N3BJZVpFNHA2NzBORkhmc0pwYmRNa0MxNWNva21ER3M2VVMiLCJpYXQiOjE3MzU2NzEwMzl9.25pSRSzKAKh-8-HBVKnIJp-nnPbYbVWkGpTNf7xUC5g";
+export function Home() {
   const [posts, setPosts] = useState();
 
   useEffect(() => {
     fetch("/api/post", {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { Authorization: `Bearer ${localStorage.getItem("authToken")}` },
     })
       .then((resp) => resp.json())
       .then((json) => {
@@ -35,5 +33,3 @@ function Home() {
     </>
   );
 }
-
-export default Home;
