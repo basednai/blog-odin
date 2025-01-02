@@ -25,7 +25,11 @@ export const Nav = () => {
               <Link to="/post/new"> New Post</Link>
             </li>
             <li>
-              <Link to="/login">login</Link>
+              {localStorage.getItem("authToken") ? (
+              <Link to="/logout">Log Out</Link>
+              ) : (
+                <Link to="/login">Log In</Link>
+              )}
             </li>
           </ul>
         </div>

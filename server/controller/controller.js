@@ -80,7 +80,7 @@ exports.getPost = async (req, res) => {
 exports.getUserPosts = async (req, res) => {
   const { userId } = req.params;
   console.log(userId);
-  
+
   try {
     const posts = await db.getUserPosts(userId);
 
@@ -95,6 +95,17 @@ exports.putPost = async (req, res) => {
   const { content, publish } = req.body;
   try {
     const post = await db.putPost(id, content, publish);
+
+    return res.send(post);
+  } catch (error) {
+    return error;
+  }
+};
+
+exports.publishPost = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const post = await db.publishPost(id);
 
     return res.send(post);
   } catch (error) {

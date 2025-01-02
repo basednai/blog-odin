@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { Nav } from "../nav";
+import { useNavigate } from "react-router-dom";
 
 export const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  let navigate = useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,10 +27,8 @@ export const Login = () => {
 
       // Save the JWT to localStorage
         localStorage.setItem("authToken", token);
-        console.log(token);
 
-
-      alert("Login successful!");
+        navigate('/')
     } catch (error) {
       console.error("Error logging in:", error);
       alert("Login failed. Please check your credentials.");

@@ -152,6 +152,27 @@ exports.disconnectPost = async (id) => {
   }
 };
 
+exports.publishPost = async (id) => {
+  try {
+    const getPub = await prisma.post.findUnique({
+      where: {
+        id: id,
+      },
+    });
+
+    const post = await prisma.post.update({
+      where: {
+        id: id,
+      },
+      data: {
+       publish: !getPub.publish},
+    });
+    return post;
+  } catch (error) {
+    return error;
+  }
+};
+
 exports.deletePost = async (id) => {
   return;
 };

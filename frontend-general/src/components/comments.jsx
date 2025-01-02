@@ -12,6 +12,7 @@ export const Comments = ({ comments }) => {
             <Post
               key={i}
               post={comment}
+              showArrow={false}
             />
           );
         })}

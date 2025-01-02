@@ -49,9 +49,9 @@ export const PostPage = () => {
 
   return (
     <>
-      {/* <div className="container mx-auto w-4/5"> */}
+
       <Nav />
-      {post && <Post post={post} />}
+      {post && <Post post={post} showArrow={true} />}
       <button
         onClick={() => setCommenter(!commenter)}
         className="rounded-md bg-gray-500 px-4 py-2 text-white transition-colors hover:bg-blue-400"
@@ -60,7 +60,6 @@ export const PostPage = () => {
       </button>
       {commenter && <CommentEditor setContent={setContent} setCommenter={setCommenter} />}
       {post && <Comments comments={post.comments} post={post} />}
-      {/* </div> */}
     </>
   );
 };

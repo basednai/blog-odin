@@ -4,8 +4,10 @@ import StarterKit from "@tiptap/starter-kit";
 import TextStyle from "@tiptap/extension-text-style";
 import PropTypes from "prop-types";
 import Placeholder from "@tiptap/extension-placeholder";
+import { useEffect } from "react";
 
-export const TextEditor = ({setContent}) => {
+export const TextEditor = ({ setContent, editContent }) => {
+
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -20,8 +22,14 @@ export const TextEditor = ({setContent}) => {
       Color,
       TextStyle,
     ],
-    content: 'Test Post from React 2 :)',
+    content: editContent || "Enter text here :)" ,
   });
+
+   useEffect(() => {
+     if (editor && editContent) {
+       editor.commands.setContent(editContent);
+     }
+   }, [editor, editContent]);
 
   if (!editor) {
     return null;
@@ -33,8 +41,6 @@ export const TextEditor = ({setContent}) => {
 
   return (
     <div className="prose space-y-4">
-      <h2 className="text-xl font-semibold">New Post</h2>
-
       {/* Toolbar Buttons */}
       <div className="mb-4 space-x-2">
         {/* Bold Button */}
@@ -158,5 +164,6 @@ export const TextEditor = ({setContent}) => {
 };
 
 TextEditor.propTypes = {
-  setContent: PropTypes.func
+  setContent: PropTypes.func,
+  editContent: PropTypes.string
 }

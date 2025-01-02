@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { postPost, getPost, getPosts, putPost, disconnectPost, deletePost, getUserPosts } = require("../controller/controller");
+const { postPost, getPost, getPosts, putPost, disconnectPost, deletePost, getUserPosts, publishPost } = require("../controller/controller");
 
 const post = Router();
 
@@ -14,6 +14,9 @@ post.post("/:id", (req, res) => {
 });
 
 post.put('/:id', putPost)
+post.put('/:id/disconnect', disconnectPost)
+
+post.put('/:id/publish', publishPost)
 post.put('/:id/disconnect', disconnectPost)
 
 post.delete('/:id/:delete', deletePost)
