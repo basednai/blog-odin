@@ -114,8 +114,7 @@ exports.getUserPosts = async (id) => {
         author: true,
       },
     });
-    console.log(posts);
-    
+
     return posts;
   } catch (error) {
     return error;

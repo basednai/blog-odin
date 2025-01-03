@@ -83,6 +83,9 @@ export const EditorPage = ({ newPost }) => {
   return (
     <>
       <Nav />
+      <button onClick={() => navigate(-1)} className="material-icons ml-auto">
+        arrow_back
+      </button>
       <h2 className="text-xl font-semibold">
         {newPost ? "New Post" : "Edit Post"}
       </h2>

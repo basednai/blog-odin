@@ -64,12 +64,11 @@ exports.postPost = async (req, res) => {
 
 exports.getPost = async (req, res) => {
   const { id } = req.params;
-  console.log(id);
+
 
   try {
     const post = await db.getPost(id);
 
-    console.log(post);
 
     return res.send(post);
   } catch (error) {
@@ -81,7 +80,6 @@ exports.getPost = async (req, res) => {
 
 exports.getUserPosts = async (req, res) => {
   const { userId } = req.params;
-  console.log(userId);
 
   try {
     const posts = await db.getUserPosts(userId);
@@ -108,7 +106,6 @@ exports.draftPost = async (req, res) => {
   const { id } = req.params;
   const userId = req.user.id;
   const { content } = req.body;
-  console.log("content", content);
 
   try {
     const post = await db.draftPost(userId, id, content);

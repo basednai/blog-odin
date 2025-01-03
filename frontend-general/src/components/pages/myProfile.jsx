@@ -95,10 +95,12 @@ export const MyProfile = () => {
       </div>
 
       {posts && filter == "both"
-        ? posts.map((post, i) => <Post key={i} post={post} />)
+        ? posts
+            .filter((post) => (draftFilter ? !post.publish : post.publish))
+            .map((post, i) => <Post key={i} post={post} />)
         : posts &&
           posts
-            .filter((post) => post.type == "filter")
+            .filter((post) => post.type == filter)
             .filter((post) => (draftFilter ? !post.publish : post.publish))
             .map((post, i) => <Post key={i} post={post} />)}
     </>

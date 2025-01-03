@@ -91,11 +91,12 @@ export const Post = ({ post }) => {
         <div className="modal-box">
           <h3 className="text-lg font-bold">Hello!</h3>
           <p className="py-4">
-            Press ESC key or click the button below to close
+            Are you sure you want to delete?
           </p>
           <div className="modal-action">
             <form method="dialog">
               {/* if there is a button in form, it will close the modal */}
+              <button className="btn bg-blue-400 text-white">Close</button>
               <button onClick={deletePost} className="btn bg-red-600 text-white">Delete Post</button>
             </form>
           </div>

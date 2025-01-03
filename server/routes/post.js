@@ -32,9 +32,8 @@ module.exports = { post };
 
 async function authorCheck(req, res, next) {
   const post = await db.getPost(req.params.id);
-  console.log(post.authorId, req.user.id);
 
-  if (post.authorId !== req.user.id) {
+  if (post?.authorId !== req.user.id) {
     console.log("no match")
 
     return res
