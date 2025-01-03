@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Nav } from "../nav";
 import { Link, useNavigate } from "react-router-dom";
 
-export const Login = () => {
+export const SignUp = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   let navigate = useNavigate();
@@ -11,7 +11,7 @@ export const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch("/api/login", {
+      const response = await fetch("/api/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -28,7 +28,7 @@ export const Login = () => {
       // Save the JWT to localStorage
       localStorage.setItem("authToken", token);
 
-      navigate("/");
+      navigate("/login");
     } catch (error) {
       console.error("Error logging in:", error);
       alert("Login failed. Please check your credentials.");
@@ -38,14 +38,12 @@ export const Login = () => {
     <>
       <div className="flex h-screen flex-col">
         <Nav />
-
         <form
           onSubmit={handleSubmit}
-          //   className="mx-auto flex w-2/5 flex-1 flex-col content-center justify-center gap-2"
-          className="absolute left-1/2 top-1/2 flex w-2/5 -translate-x-1/2 -translate-y-1/2 flex-col gap-2"
+          // className="mx-auto flex w-2/5 flex-1 flex-col content-center justify-center gap-2 "
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col gap-2 w-2/5"
         >
-          <h1 className="mb-5 text-center font-bold">Sign into your account</h1>
-
+          <h1 className="mb-5 text-center font-bold">Create your account</h1>
           <label className="input input-bordered flex items-center gap-2">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -91,9 +89,7 @@ export const Login = () => {
             Submit
           </button>
           <div className="hover:-translate-y- mt-8 h-10 w-fit self-center text-center duration-200 hover:-translate-y-2 dark:hover:text-white">
-            <Link to="/signup" className="">
-              Create an Account
-            </Link>
+            <Link to="/login">Already have an account?</Link>
           </div>
         </form>
       </div>

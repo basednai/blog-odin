@@ -4,9 +4,11 @@ import StarterKit from "@tiptap/starter-kit";
 import TextStyle from "@tiptap/extension-text-style";
 import PropTypes from "prop-types";
 import Placeholder from "@tiptap/extension-placeholder";
-import { useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 
 export const TextEditor = ({ setContent, editContent }) => {
+  const { postId } = useParams();
+  let navigate = useNavigate();
 
   const editor = useEditor({
     extensions: [
@@ -17,32 +19,50 @@ export const TextEditor = ({ setContent, editContent }) => {
       }),
       Placeholder.configure({
         // Use a placeholder:
-        placeholder: 'Write something …',
+        placeholder: "Write something …",
       }),
       Color,
       TextStyle,
     ],
-    content: editContent || "Enter text here :)" ,
+    content: editContent || "Enter text here :)",
   });
-
-   useEffect(() => {
-     if (editor && editContent) {
-       editor.commands.setContent(editContent);
-     }
-   }, [editor, editContent]);
 
   if (!editor) {
     return null;
   }
 
   async function sendContent() {
-    setContent(editor.getHTML())
+    setContent(editor.getHTML());
+  }
+
+  async function draftContent() {
+
+    const fetchData = async () => {
+      const data = await fetch(`/api/post/${postId}/draft`, {
+        method: "PUT",
+
+        body: JSON.stringify({ content: editor.getHTML() }),
+        headers: {
+          authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          "Content-Type": "application/json",
+        },
+      });
+      const json = await data.json();
+
+      return json;
+    };
+
+    fetchData()
+      .then((data) => {
+        navigate(`/post/${data.id}`);
+      })
+      .catch((err) => console.log(err));
   }
 
   return (
     <div className="prose space-y-4">
       {/* Toolbar Buttons */}
-      <div className="mb-4 space-x-2">
+      <div className="mb-4 space-x-2 space-y-3">
         {/* Bold Button */}
         <button
           onClick={() => editor.chain().focus().toggleBold().run()}
@@ -123,29 +143,6 @@ export const TextEditor = ({ setContent, editContent }) => {
         >
           Toggle blockquote
         </button>
-        {/* Color Picker */}
-        <button className="rounded-md bg-gray-500 py-2 text-white transition-colors">
-          <label className="px-4 py-4">
-            Text Color
-            <input
-              type="color"
-              onChange={(event) =>
-                editor.chain().focus().setColor(event.target.value).run()
-              }
-              className="invisible h-0 w-0"
-              // value={editor.getAttributes("textStyle").color}
-              data-testid="setColor"
-            />
-          </label>
-        </button>
-
-        <button
-          className="rounded-md bg-gray-500 px-4 py-2 text-white transition-colors"
-          onClick={() => editor.chain().focus().unsetColor().run()}
-          data-testid="unsetColor"
-        >
-          Unset color
-        </button>
       </div>
 
       {/* Editor Content */}
@@ -153,17 +150,26 @@ export const TextEditor = ({ setContent, editContent }) => {
         <EditorContent editor={editor} />
       </div>
 
-      <button
-        className="rounded-md bg-gray-500 px-4 py-2 text-white transition-colors hover:bg-blue-400"
-        onClick={sendContent}
-      >
-        Submit
-      </button>
+      <div className="flex gap-4">
+        <button
+          className="rounded-md bg-blue-400 px-4 py-2 text-white transition-colors hover:bg-gray-500"
+          onClick={sendContent}
+        >
+          Submit
+        </button>
+        <button
+          className="rounded-md bg-gray-500 px-4 py-2 text-white transition-colors hover:bg-blue-400"
+          onClick={draftContent}
+        >
+          Draft
+        </button>
+      </div>
     </div>
   );
 };
 
 TextEditor.propTypes = {
   setContent: PropTypes.func,
+  setDraft: PropTypes.func,
   editContent: PropTypes.string
 }

@@ -2,8 +2,11 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import PropTypes from "prop-types";
 import Placeholder from "@tiptap/extension-placeholder";
+import { useNavigate, useParams } from "react-router-dom";
 
-export const CommentEditor = ({setContent, setCommenter}) => {
+export const CommentEditor = ({ setCommenter }) => {
+  const { postId } = useParams();
+  const navigate = useNavigate();
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -13,10 +16,10 @@ export const CommentEditor = ({setContent, setCommenter}) => {
       }),
       Placeholder.configure({
         // Use a placeholder:
-        placeholder: 'Write something …',
+        placeholder: "Write something …",
       }),
     ],
-    content: 'Test Comment from React 2 :)',
+    content: "Test Comment from React 2 :)",
   });
 
   if (!editor) {
@@ -24,15 +27,34 @@ export const CommentEditor = ({setContent, setCommenter}) => {
   }
 
   async function sendContent() {
-    setContent(editor.getHTML())
-    setCommenter(false)
+    const fetchData = async () => {
+      const data = await fetch(`/api/post/${postId}`, {
+        method: "POST",
+
+        body: JSON.stringify({ content: editor.getHTML() }),
+        headers: {
+          authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          "Content-Type": "application/json",
+        },
+      });
+      const json = await data.json();
+      return json;
+    };
+
+    fetchData()
+      .then(navigate(0))
+      .catch((err) => {
+        throw new Error(err);
+      });
+
+    // setContent(editor.getHTML())
+    setCommenter(false);
   }
 
   return (
-    <div className="prose space-y-4 my-5">
-
+    <div className="prose my-5 space-y-4">
       {/* Toolbar Buttons */}
-      <div className="mb-4 space-x-2">
+      <div className="mb-4 space-x-2 space-y-3">
         {/* Bold Button */}
         <button
           onClick={() => editor.chain().focus().toggleBold().run()}
@@ -113,7 +135,6 @@ export const CommentEditor = ({setContent, setCommenter}) => {
         >
           Toggle blockquote
         </button>
-
       </div>
 
       {/* Editor Content */}
@@ -133,5 +154,5 @@ export const CommentEditor = ({setContent, setCommenter}) => {
 
 CommentEditor.propTypes = {
   setContent: PropTypes.func,
-  setCommenter: PropTypes.func
-}
+  setCommenter: PropTypes.func,
+};

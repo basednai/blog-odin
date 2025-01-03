@@ -14,13 +14,11 @@ exports.signUpPost = [
       res.send(errors.array().map((error) => "msg: " + error.msg));
       return;
     }
-    console.log(req.body);
 
     req.body.password = await pw.encryptPW(req.body.password);
 
     try {
       const result = await db.addUser(req.body);
-      console.log(result);
       // res.redirect("/sign-in");
       res.send(result);
     } catch (error) {
@@ -55,10 +53,8 @@ exports.postPost = async (req, res) => {
   const { content, publish } = req.body;
   const parentId = req.params.id || undefined;
 
-
   try {
     const post = await db.addPost(userId, content, publish, parentId);
-
 
     return res.send(post);
   } catch (error) {
@@ -68,11 +64,17 @@ exports.postPost = async (req, res) => {
 
 exports.getPost = async (req, res) => {
   const { id } = req.params;
+  console.log(id);
+
   try {
     const post = await db.getPost(id);
 
+    console.log(post);
+
     return res.send(post);
   } catch (error) {
+    console.log(error);
+
     return error;
   }
 };
@@ -102,10 +104,14 @@ exports.putPost = async (req, res) => {
   }
 };
 
-exports.publishPost = async (req, res) => {
+exports.draftPost = async (req, res) => {
   const { id } = req.params;
+  const userId = req.user.id;
+  const { content } = req.body;
+  console.log("content", content);
+
   try {
-    const post = await db.publishPost(id);
+    const post = await db.draftPost(userId, id, content);
 
     return res.send(post);
   } catch (error) {
@@ -118,7 +124,6 @@ exports.disconnectPost = async (req, res) => {
 
   try {
     const post = await db.disconnectPost(id);
-    console.log(post);
 
     return res.send(post);
   } catch (error) {
@@ -132,8 +137,7 @@ exports.deletePost = async (req, res) => {
   try {
     const post = await db.deletePost(id);
 
-
-    return res.send("delete logic");
+    return res.send(post);
   } catch (error) {
     return error;
   }
@@ -143,7 +147,7 @@ exports.getPosts = async (req, res) => {
   try {
     const posts = await db.getPosts();
 
-    return res.send(posts)//.map((post) => post.content));
+    return res.send(posts); //.map((post) => post.content));
   } catch (error) {
     return error;
   }

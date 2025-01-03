@@ -64,14 +64,21 @@ exports.getPost = async (id) => {
         comments: {
           include: {
             author: true,
-            comments: true,
+            comments: {
+              orderBy: {
+                createdAt: 'desc'
+              }
+            },
           },
         },
         author: true,
       },
     });
+
     return post;
   } catch (error) {
+    // console.log(error);
+
     return error;
   }
 };
@@ -80,8 +87,13 @@ exports.getPosts = async () => {
   try {
     const posts = await prisma.post.findMany({
       include: {
-        comments: true,
+        comments: {
+          orderBy : {createdAt : "asc"}
+        },
         author: true,
+      },
+      orderBy: {
+        createdAt: "asc",
       },
     });
 
@@ -102,8 +114,8 @@ exports.getUserPosts = async (id) => {
         author: true,
       },
     });
-
-
+    console.log(posts);
+    
     return posts;
   } catch (error) {
     return error;
@@ -121,6 +133,7 @@ exports.putPost = async (id, content, publish = true) => {
         publish: publish,
       },
     });
+
     return post;
   } catch (error) {
     return error;
@@ -152,29 +165,58 @@ exports.disconnectPost = async (id) => {
   }
 };
 
-exports.publishPost = async (id) => {
+exports.draftPost = async (userId, id, content) => {
   try {
-    const getPub = await prisma.post.findUnique({
-      where: {
-        id: id,
-      },
+    const getParent = await prisma.post.findUnique({
+      where: { id },
     });
 
-    const post = await prisma.post.update({
-      where: {
-        id: id,
-      },
-      data: {
-       publish: !getPub.publish},
-    });
-    return post;
+    if (getParent) {
+      // Update logic
+      const updatedPost = await prisma.post.update({
+        where: { id },
+        data: {
+          content: content,
+          publish: false, // Update post properties as needed
+        },
+      });
+
+
+      return updatedPost;
+    } else {
+      // Create logic
+      const createdPost = await prisma.post.create({
+        data: {
+          author: {
+            connect: { id: userId },
+          },
+          parentComment: getParent?.parentId
+            ? { connect: { id: getParent.parentId } }
+            : undefined,
+          content,
+          publish: false,
+          type: getParent?.parentId ? "comment" : "post",
+        },
+      });
+      return createdPost;
+    }
   } catch (error) {
     return error;
   }
 };
 
 exports.deletePost = async (id) => {
-  return;
+try {
+  const post = await prisma.post.delete({
+    where : { id : id}
+  })
+
+  return post
+} catch (error) {
+  console.log(error)
+  return error
+}
+
 };
 
 exports.logout = (req, res, next) => {

@@ -20,6 +20,10 @@
   pointer-events: none;
 }
 
+body {
+  overflow-y: scroll;
+}
+
 /* #root {
   @apply flex w-screen items-center justify-center;
 } */

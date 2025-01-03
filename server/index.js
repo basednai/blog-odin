@@ -9,7 +9,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use("/", home);
-app.use('/sign-up', signUp)
+app.use('/signup', signUp)
 app.use("/login", logIn);
 app.use("/post", passport.authenticate("jwt", { session: false }), post);
 app.use("/logout", logOut);

@@ -3,6 +3,7 @@ import { Nav } from "../nav";
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useNavigate, useParams } from "react-router-dom";
+import { userCheckNoId } from "../../utils/userIdFromJWT";
 
 export const EditorPage = ({ newPost }) => {
   const { postId } = useParams();
@@ -10,6 +11,21 @@ export const EditorPage = ({ newPost }) => {
   const [editContent, setEditContent] = useState();
   let navigate = useNavigate();
 
+  useEffect(() => {
+    const authorize = async () => {
+      const check = await userCheckNoId(postId);
+
+
+      if (!check) {
+        navigate("/error", {
+          state: {
+            errorMessage: "You do not have permission to edit this post.",
+          },
+        });
+      }
+    };
+    if (!newPost) authorize();
+  });
   //post or put post
   useEffect(() => {
     const fetchData = async () => {
@@ -37,10 +53,11 @@ export const EditorPage = ({ newPost }) => {
     };
     if (content != undefined) {
       fetchData()
-        .then((data) => console.log(data))
+        .then((data) => {
+          console.log(data);
+          navigate(`/post/${data.id}`);
+        })
         .catch((err) => console.log(err));
-
-      navigate(`/post/${postId}`);
     }
   }, [content, newPost, postId, navigate]);
 
@@ -70,7 +87,13 @@ export const EditorPage = ({ newPost }) => {
         {newPost ? "New Post" : "Edit Post"}
       </h2>
       <div className="my-3">
-        <TextEditor setContent={setContent} editContent={editContent} />
+        {newPost ? (
+          <TextEditor setContent={setContent} editContent={editContent} />
+        ) : (
+          editContent != undefined && (
+            <TextEditor setContent={setContent} editContent={editContent} />
+          )
+        )}
       </div>
     </>
   );
